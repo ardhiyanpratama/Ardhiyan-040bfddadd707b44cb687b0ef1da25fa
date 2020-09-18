@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Entry Point Application</title>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="row mt-3">
+            <div class="col-6">
+                <h1 id="times">Time :</h1>
+            </div>
+            <div class="col-6">
+                <h1 class="logout" style="text-align: right;" id="logout">Logout</h1>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-12 text-center">
+                <h1 id="Hello" style="margin-top: 8em;">Hello</h1>
+            </div>
+        </div>
+    </div>
+
+    <script src="./js/jquery-3.5.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    <script src="https://momentjs.com/downloads/moment.js"></script>
+</body>
+
+</html>
+<script type="text/javascript">
+
+    function checkTime(i) {
+        if (i < 10) {
+            i = "0" + i;
+        }
+        return i;
+    }
+
+    function startTime() {
+        var today = new Date();
+        var h = today.getHours();
+        var m = today.getMinutes();
+        var s = today.getSeconds();
+        // add a zero in front of numbers<10
+        m = checkTime(m);
+        s = checkTime(s);
+        document.getElementById('times').innerHTML = "Time : " + h + ":" + m + ":" + s;
+        t = setTimeout(function () {
+            startTime()
+        }, 500);
+    }
+    startTime();
+
+    $('#Hello').click(function (event) {
+
+        var getUsername = sessionStorage.getItem("userActive")
+        var getUserTime = sessionStorage.getItem("userActiveTime")
+
+        const format1 = "HH:mm:ss"
+        var date1 = new Date(getUserTime);
+        dateTime1 = moment(date1).format(format1);
+
+
+        document.getElementById('Hello').innerHTML = "Hai " + getUsername  + " , Waktu Login Anda " + dateTime1;
+    })
+
+    $('#logout').click(function (event) {
+
+        var getUsername = sessionStorage.getItem("userActive")
+        var getUserTime = sessionStorage.getItem("userActiveTime")
+
+        if (confirm("Apakah anda ingin logout?")) {
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                url: "http://127.0.0.1:4000/logout",
+                data: {
+                    USERNAME: getUsername
+                },
+                success: function (data) {
+                    sessionStorage.clear()
+                    window.location.replace('login.html');
+                },
+                error: function (jqXHR, textStatus, err) {
+                    alert("text status " + textStatus + ", err " + err);
+                },
+            });
+        } else {
+
+        }
+    })
+
+</script>
